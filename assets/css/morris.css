@@ -1,0 +1,45 @@
+.morris-hover{
+	position:absolute;z-index:1000
+}.morris-hover.morris-default-style{
+	border-radius:10px;
+	padding:6px;color:
+	#666;background:rgba(255,255,255,0.8);
+	border:solid 2px rgba(230,230,230,0.8);
+	font-family:sans-serif;font-size:12px;text-align:center}
+	.morris-hover.morris-default-style .morris-hover-row-label{
+		font-weight:bold;margin:0.25em 0}
+	.morris-hover.morris-default-style .morris-hover-point{
+		white-space:nowrap;margin:0.1em 0
+	}
+
+.morris-chart {
+    height: 300px;
+    width: 100%;
+}
+
+.chart-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Morris chart specific fixes */
+.morris-hover {
+    position: absolute;
+    z-index: 1000;
+}
+
+.morris-chart svg {
+    width: 100% !important;
+    max-width: 100%;
+}
