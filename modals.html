@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ sidebarOpen: true, showModal: false }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modals & Alerts</title>
+    
+    <!-- Basic Meta -->
+    <meta name="description" content="Admin Template for managing data, analytics, and reports.">
+    <meta name="keywords" content="Admin, Template, Analytics, Management, Tailwind, AlpineJS">
+    <meta name="author" content="DesignCode IT">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+    <link rel="manifest" href="assets/images/site.webmanifest">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Open Graph / Social Media Meta -->
+    <meta property="og:title" content="Admin Template">
+    <meta property="og:description" content="Modern and responsive admin template interface.">
+    <meta property="og:image" content="assets/images/preview.jpg">
+    <meta property="og:url" content="https://designcodeit.com">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Meta -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Admin Template">
+    <meta name="twitter:description" content="Manage your data with a modern and powerful template.">
+    <meta name="twitter:image" content="assets/images/preview.jpg">
+
+    <!-- All Script File -->
+    <script src="assets/js/tailwind.js"></script>
+    <script src="assets/js/alpine.js" defer></script>
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/chart.js"></script>
+    <script src="assets/js/collapse.js"></script>
+    <script src="assets/js/swiper-bundle.min.js"></script>
+    <script src="assets/js/sweetalert2.all.min.js"></script>
+    <script src="assets/js/sweet-alert-demo.js"></script>
+    <script src="assets/js/quill.min.js"></script>
+    <script src="assets/js/quilljs-demo.js"></script>
+    <script src="assets/js/tooltip.js"></script>
+    <script src="assets/js/morris.min.js"></script>
+    <script src="assets/js/raphael.min.js"></script>
+    <script src="assets/js/morris-chart-demo.js"></script>
+    <script src="assets/js/fullcalendar@5.11.3.js"></script>
+    <script src="assets/js/file-uploads.js"></script>
+
+    <!-- All Icons -->
+    <link rel="stylesheet" href="assets/boxicons/css/boxicons.min.css">
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="assets/bootstrap-icons/bootstrap-icons.css">
+
+    <!-- Css file -->
+    <link rel="stylesheet" href="assets/css/app.css"/>
+    <link rel="stylesheet" href="assets/css/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="assets/css/sweetalert2.min.css"/>
+    <link rel="stylesheet" href="assets/css/quill.bubble.css"/>
+    <link rel="stylesheet" href="assets/css/quill.core.css"/>
+    <link rel="stylesheet" href="assets/css/quill.snow.css"/>
+    <link rel="stylesheet" href="assets/dropify/dropify.min.css" />
+    <link rel="stylesheet" href="assets/css/morris.css" />
+    <link rel="stylesheet" href="assets/css/calendar.css" />
+    <link rel="stylesheet" href="assets/css/google-map.css" />
+    <link rel="stylesheet" href="assets/css/fullcalendar@5.11.3.css" />
+    <link rel="stylesheet" href="assets/css/filemanager.css" />
+
+</head>
+
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-50"></div>
+    
+    <!-- Custom Tooltip Element -->
+    <div id="custom-tooltip" class="custom-tooltip" role="tooltip"></div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false"></div>
+
+    <!-- Sidebar -->
+    <aside class="fixed inset-y-0 left-0 z-50 flex flex-col transition-all duration-300 overflow-hidden"
+       :class="[sidebarOpen ? 'w-60 active' : 'w-24']">
+        <div class="absolute inset-0 bg-white/95 backdrop-blur-lg border-r border-gray-200"></div>
+        <!-- Toggle -->
+        <div class="relative flex items-center justify-between p-4 border-b border-gray-200">
+            <div class="flex items-center space-x-3">
+                <a href="index.html">
+                    <span x-show="sidebarOpen" class="flex items-center space-x-3 text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent transition-all duration-300">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center shadow-lg mr-2">
+                        <i class="fas fa-cube text-white text-lg"></i>
+                    </div>
+                        DCIT ADMIN
+                    </span>
+                </a>
+            </div>
+            <button @click="sidebarOpen = !sidebarOpen" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md">
+                <i class="fas fa-bars text-gray-600"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="relative flex-1 mt-4 px-3 sidebar-scrollbar overflow-y-auto" x-data="{ activeMenu: $store.global.activeMenu }">
+
+            <!-- Dashboard Dropdown -->
+            <div x-data="{ 
+                    open: ['index','index2'].includes(activeMenu), }" class="tooltip-container mb-1">
+                <!-- Main Button -->
+                <button @click="open=!open"
+                    :class="open ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                    class="group w-full flex items-center justify-between p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm"
+                    data-title="Tables">
+
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300"
+                            :class="open ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                            <i class="fas fa-home text-lg"></i>
+                        </div>
+                        <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Dashboard</span>
+                    </div>
+
+                    <!-- Dropdown arrows -->
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'"
+                       class="transition-transform duration-300" 
+                       x-show="sidebarOpen"></i>
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'" 
+                       class="dropdown-indicator" 
+                       x-show="!sidebarOpen"></i>
+                </button>
+
+                <!-- Expanded Dropdown (Sidebar Open) -->
+                <div x-show="open && sidebarOpen" 
+                     x-transition:enter="transition ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 -translate-y-2" 
+                     x-transition:enter-end="opacity-100 translate-y-0" 
+                     class="mt-1 ml-4 pl-3 border-l-2 border-gray-200 space-y-1 overflow-hidden">
+
+                    <!-- Dashboard 1 -->
+                    <div class="tooltip-container">
+                        <a href="index.html" @click="activeMenu='index'" 
+                           :class="activeMenu==='index' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Basic Tables">
+                            <i class="fas fa-layer-group"></i>
+                            <span class="ml-3 transition-all duration-300">Preview 1</span>
+                        </a>
+                    </div>
+
+                    <!-- Dashboard 2 -->
+                    <div class="tooltip-container">
+                        <a href="index2.html" @click="activeMenu='index2'" 
+                           :class="activeMenu==='index2' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Data Tables">
+                            <i class="fas fa-layer-group"></i>
+                            <span class="ml-3 transition-all duration-300">Preview 2</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Collapsed State (Sidebar Closed) -->
+                <div x-show="!sidebarOpen && open" class="mt-1 space-y-1 overflow-hidden">
+                    <!-- Preview 1 -->
+                    <div class="tooltip-container">
+                        <a href="index.html" @click="activeMenu='index'" 
+                           :class="activeMenu==='index' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                           class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" 
+                           data-title="Preview 1">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                                 :class="activeMenu==='index' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Preview 2 -->
+                    <div class="tooltip-container">
+                        <a href="index2.html" @click="activeMenu='index2'" 
+                           :class="activeMenu==='index2' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                           class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" 
+                           data-title="Preview 2">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                                 :class="activeMenu==='index2' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables Dropdown -->
+            <div x-data="{ 
+                    open: ['basic_tables','tables'].includes(activeMenu), }" class="tooltip-container mb-1">
+                <!-- Main Button -->
+                <button @click="open=!open"
+                    :class="open ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                    class="group w-full flex items-center justify-between p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm"
+                    data-title="Tables">
+
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300"
+                            :class="open ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                            <i class="fas fa-table text-lg"></i>
+                        </div>
+                        <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Tables</span>
+                    </div>
+
+                    <!-- Dropdown arrows -->
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'"
+                       class="transition-transform duration-300" 
+                       x-show="sidebarOpen"></i>
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'" 
+                       class="dropdown-indicator" 
+                       x-show="!sidebarOpen"></i>
+                </button>
+
+                <!-- Expanded Dropdown (Sidebar Open) -->
+                <div x-show="open && sidebarOpen" 
+                     x-transition:enter="transition ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 -translate-y-2" 
+                     x-transition:enter-end="opacity-100 translate-y-0" 
+                     class="mt-1 ml-4 pl-3 border-l-2 border-gray-200 space-y-1 overflow-hidden">
+
+                    <!-- Basic Tables -->
+                    <div class="tooltip-container">
+                        <a href="basic_tables.html" @click="activeMenu='basic_tables'" 
+                           :class="activeMenu==='basic_tables' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Basic Tables">
+                            <i class="fas fa-table w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Basic Tables</span>
+                        </a>
+                    </div>
+
+                    <!-- Data Tables -->
+                    <div class="tooltip-container">
+                        <a href="tables.html" @click="activeMenu='tables'" 
+                           :class="activeMenu==='tables' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Data Tables">
+                            <i class="fas fa-table w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Data Tables</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Collapsed State (Sidebar Closed) -->
+                <div x-show="!sidebarOpen && open" class="mt-1 space-y-1 overflow-hidden">
+                    <!-- Basic Tables -->
+                    <div class="tooltip-container">
+                        <a href="basic_tables.html" @click="activeMenu='basic_tables'" 
+                           :class="activeMenu==='basic_tables' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                           class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" 
+                           data-title="Basic Tables">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                                 :class="activeMenu==='basic_tables' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-table text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Data Tables -->
+                    <div class="tooltip-container">
+                        <a href="tables.html" @click="activeMenu='tables'" 
+                           :class="activeMenu==='tables' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                           class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" 
+                           data-title="Data Tables">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                                 :class="activeMenu==='tables' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-table text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile -->
+            <div class="tooltip-container mb-1">
+                <a href="profile.html" @click="activeMenu = 'profile'" :class="activeMenu === 'profile' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Profile">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu === 'profile' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                        <i class="fas fa-user text-lg"></i>
+                    </div>
+                    <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Profile</span>
+                </a>
+            </div>
+            
+            <!-- Modals -->
+            <div class="tooltip-container mb-1">
+                <a href="modals.html" @click="activeMenu = 'modals'" 
+                   :class="activeMenu === 'modals' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Modals">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu === 'modals' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                        <i class="fas fa-window-maximize text-lg"></i>
+                    </div>
+                    <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Modals</span>
+                </a>
+            </div>
+
+            <!-- File Manager -->
+            <div class="tooltip-container mb-1">
+                <a href="file-manager.html" @click="activeMenu = 'file-manager'" 
+                   :class="activeMenu === 'file-manager' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="file-manager">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu === 'file-manager' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                        <i class="fas fa-folder-open text-lg"></i>
+                    </div>
+                    <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">File Manager</span>
+                </a>
+            </div>
+            
+            <!-- Elements Dropdown -->
+            <div x-data="{ open: ['icons','buttons','carousels','tabs','progress','toasts','sweetalert'].includes(activeMenu) }" class="tooltip-container mb-1">
+                <button @click="open=!open" :class="open ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group w-full flex items-center justify-between p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Elements">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300"
+                             :class="open ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                            <i class="fas fa-cube text-lg"></i>
+                        </div>
+                        <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Elements</span>
+                    </div>
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'" 
+                       class="transition-transform duration-300" 
+                       x-show="sidebarOpen"></i>
+                    <!-- Dropdown indicator for collapsed sidebar -->
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'" 
+                       class="dropdown-indicator" 
+                       x-show="!sidebarOpen"></i>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div x-show="open && sidebarOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-1 ml-4 pl-3 border-l-2 border-gray-200 space-y-1 overflow-hidden">
+                    <!-- Icons -->
+                    <div class="tooltip-container">
+                        <a href="icons.html" @click="activeMenu='icons'" :class="activeMenu==='icons' ? 'text-blue-600' : ''" class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Icons">
+                            <i class="fas fa-icons w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Icons</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="tooltip-container">
+                        <a href="buttons.html" @click="activeMenu='buttons'" 
+                           :class="activeMenu==='buttons' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Buttons">
+                            <i class="fas fa-square w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Buttons</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Carousels -->
+                    <div class="tooltip-container">
+                        <a href="carousels.html" @click="activeMenu='carousels'":class="activeMenu==='carousels' ? 'text-blue-600' : ''" class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Carousels">
+                            <i class="fas fa-sliders-h w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Carousels</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <div class="tooltip-container">
+                        <a href="tabs.html" @click="activeMenu='tabs'" :class="activeMenu==='tabs' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Tabs">
+                            <i class="fas fa-folder w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Tabs</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Progress Bars -->
+                    <div class="tooltip-container">
+                        <a href="progress.html" @click="activeMenu='progress'" 
+                           :class="activeMenu==='progress' ? 'text-blue-600' : ''" class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Progress Bars">
+                            <i class="fas fa-chart-bar w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Progress Bars</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Toasts -->
+                    <div class="tooltip-container">
+                        <a href="toasts.html" @click="activeMenu='toasts'" 
+                           :class="activeMenu==='toasts' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Toasts">
+                            <i class="fas fa-bell w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Toasts</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Sweet Alerts -->
+                    <div class="tooltip-container">
+                        <a href="sweet_alerts.html" @click="activeMenu='sweetalert'" :class="activeMenu==='sweetalert' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Sweet Alert">
+                            <i class="fas fa-exclamation-triangle w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Sweet Alert</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Collapsed State Menu Items -->
+                <div x-show="!sidebarOpen && open" class="mt-1 space-y-1 overflow-hidden">
+                    <!-- Icons -->
+                    <div class="tooltip-container">
+                        <a href="icons.html" @click="activeMenu='icons'" :class="activeMenu==='icons' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Icons">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='icons' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-icons text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="tooltip-container">
+                        <a href="buttons.html" @click="activeMenu='buttons'" :class="activeMenu==='buttons' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Buttons">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='buttons' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-square text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Carousels -->
+                    <div class="tooltip-container">
+                        <a href="carousels.html" @click="activeMenu='carousels'" :class="activeMenu==='carousels' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Carousels">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='carousels' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-sliders-h text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <div class="tooltip-container">
+                        <a href="tabs.html" @click="activeMenu='tabs'" :class="activeMenu==='tabs' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Tabs">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='tabs' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-folder text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Progress Bars -->
+                    <div class="tooltip-container">
+                        <a href="progress.html" @click="activeMenu='progress'" :class="activeMenu==='progress' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Progress Bars">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='progress' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-chart-bar text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Toasts -->
+                    <div class="tooltip-container">
+                        <a href="toasts.html" @click="activeMenu='toasts'" :class="activeMenu==='toasts' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Toasts">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='toasts' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-bell text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Sweet Alerts -->
+                    <div class="tooltip-container">
+                        <a href="sweet_alerts.html" @click="activeMenu='sweetalert'" :class="activeMenu==='sweetalert' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Sweet Alert">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='sweetalert' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-exclamation-triangle text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CRUD -->
+            <div class="tooltip-container mb-1">
+                <a href="crud.html" @click="activeMenu = 'crud'" :class="activeMenu === 'crud' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" 
+                   class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="CRUD">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu === 'crud' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                        <i class="fas fa-edit text-lg"></i>
+                    </div>
+                    <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Crud</span>
+                </a>
+            </div>
+
+            <!-- Charts Dropdown -->
+            <div x-data="{ 
+                    open: ['morris'].includes(activeMenu), }" class="tooltip-container mb-1">
+                <!-- Main Button -->
+                <button @click="open=!open"
+                    :class="open ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                    class="group w-full flex items-center justify-between p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm"
+                    data-title="Charts">
+
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300"
+                            :class="open ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                            <i class="fas fa-chart-pie text-lg"></i>
+                        </div>
+                        <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Charts</span>
+                    </div>
+
+                    <!-- Dropdown arrows -->
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'"
+                       class="transition-transform duration-300" 
+                       x-show="sidebarOpen"></i>
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'" 
+                       class="dropdown-indicator" 
+                       x-show="!sidebarOpen"></i>
+                </button>
+
+                <!-- Expanded Dropdown (Sidebar Open) -->
+                <div x-show="open && sidebarOpen" 
+                     x-transition:enter="transition ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 -translate-y-2" 
+                     x-transition:enter-end="opacity-100 translate-y-0" 
+                     class="mt-1 ml-4 pl-3 border-l-2 border-gray-200 space-y-1 overflow-hidden">
+
+                    <!-- Morris -->
+                    <div class="tooltip-container">
+                        <a href="morris.html" @click="activeMenu='morris'" 
+                           :class="activeMenu==='morris' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Basic Tables">
+                            <i class="fas fa-chart-area w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Morris</span>
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Collapsed State (Sidebar Closed) -->
+                <div x-show="!sidebarOpen && open" class="mt-1 space-y-1 overflow-hidden">
+                    <!-- Basic Tables -->
+                    <div class="tooltip-container">
+                        <a href="morris.html" @click="activeMenu='morris'" 
+                           :class="activeMenu==='morris' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                           class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" 
+                           data-title="Basic Tables">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                                 :class="activeMenu==='morris' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-table text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- Forms Dropdown -->
+            <div x-data="{ 
+                    open: ['fileuploads','quilljs'].includes(activeMenu), }" class="tooltip-container mb-1">
+                <!-- Main Button -->
+                <button @click="open=!open"
+                    :class="open ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                    class="group w-full flex items-center justify-between p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm"
+                    data-title="Forms">
+
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300"
+                            :class="open ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                            <i class="fas fa-clipboard-list text-lg"></i>  
+                        </div>
+                        <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Forms</span>
+                    </div>
+
+                    <!-- Dropdown arrows -->
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'"
+                       class="transition-transform duration-300" 
+                       x-show="sidebarOpen"></i>
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'" 
+                       class="dropdown-indicator" 
+                       x-show="!sidebarOpen"></i>
+                </button>
+
+                <!-- Expanded Dropdown (Sidebar Open) -->
+                <div x-show="open && sidebarOpen" 
+                     x-transition:enter="transition ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 -translate-y-2" 
+                     x-transition:enter-end="opacity-100 translate-y-0" 
+                     class="mt-1 ml-4 pl-3 border-l-2 border-gray-200 space-y-1 overflow-hidden">
+
+                    <!-- File Uploads -->
+                    <div class="tooltip-container">
+                        <a href="fileuploads.html" @click="activeMenu='fileuploads'" 
+                           :class="activeMenu==='fileuploads' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Google Map">
+                            <i class="fas fa-upload text-sm"></i>
+                            <span class="ml-3 transition-all duration-300">File Uploads</span>
+                        </a>
+                    </div>
+
+                    <!-- Quilli Js -->
+                    <div class="tooltip-container">
+                        <a href="quilljs.html" @click="activeMenu='quilljs'" 
+                           :class="activeMenu==='quilljs' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Basic Tables">
+                            <i class="fas fa-pen text-sm"></i>
+                            <span class="ml-3 transition-all duration-300">Quill Editor</span>
+                        </a>
+                    </div> 
+
+                </div>
+
+                <!-- Collapsed State (Sidebar Closed) -->
+                <div x-show="!sidebarOpen && open" class="mt-1 space-y-1 overflow-hidden">
+                    <!-- File Uploads -->
+                    <div class="tooltip-container">
+                        <a href="fileuploads.html" @click="activeMenu='fileuploads'" 
+                           :class="activeMenu==='fileuploads' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                           class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" 
+                           data-title="File Uploads">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                                 :class="activeMenu==='fileuploads' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fab fa-google fa-map-marker text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Quilli Js -->
+                    <div class="tooltip-container">
+                        <a href="quillijs.html" @click="activeMenu='quillijs'" 
+                           :class="activeMenu==='quillijs' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                           class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" 
+                           data-title="Quilli Js">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                                 :class="activeMenu==='quillijs' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-map-marked-alt text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            
+            <!-- Pages Dropdown -->
+            <div x-data="{ open: ['invoice','login','signup','maintainence','recover_password','error404','error500'].includes(activeMenu) }" class="tooltip-container mb-1">
+                <button @click="open=!open" :class="open ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                        class="group w-full flex items-center justify-between p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Pages">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300" :class="open ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                            <i class="fas fa-file text-lg"></i>
+                        </div>
+                        <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Pages</span>
+                    </div>
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'" 
+                       class="transition-transform duration-300" 
+                       x-show="sidebarOpen"></i>
+                    <!-- Dropdown indicator for collapsed sidebar -->
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'" 
+                       class="dropdown-indicator" 
+                       x-show="!sidebarOpen"></i>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div x-show="open && sidebarOpen" 
+                     x-transition:enter="transition ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 -translate-y-2" 
+                     x-transition:enter-end="opacity-100 translate-y-0" 
+                     class="mt-1 ml-4 pl-3 border-l-2 border-gray-200 space-y-1 overflow-hidden">
+                    
+                    <!-- Invoice -->
+                    <div class="tooltip-container">
+                        <a href="invoice.html" @click="activeMenu='invoice'" 
+                           :class="activeMenu==='invoice' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Invoice">
+                            <i class="fas fa-receipt w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Invoice</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Login -->
+                    <div class="tooltip-container">
+                        <a href="login.html" @click="activeMenu='login'" 
+                           :class="activeMenu==='login' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Login">
+                            <i class="fas fa-sign-in-alt w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Login</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Sign Up -->
+                    <div class="tooltip-container">
+                        <a href="signup.html" @click="activeMenu='signup'" 
+                           :class="activeMenu==='signup' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Sign Up">
+                            <i class="fas fa-user-plus w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Sign Up</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Maintainence -->
+                    <div class="tooltip-container">
+                        <a href="maintainence.html" @click="activeMenu='maintainence'" :class="activeMenu==='maintainence' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="maintainence">
+                            <i class="fas fa-tools w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Maintainence</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Recover Password -->
+                    <div class="tooltip-container">
+                        <a href="recover_password.html" @click="activeMenu='recover_password'" :class="activeMenu==='recover_password' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Recover Password">
+                            <i class="fas fa-key w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Recover Password</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Error 404 -->
+                    <div class="tooltip-container">
+                        <a href="error404.html" @click="activeMenu='error404'" 
+                           :class="activeMenu==='error404' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Error 404">
+                            <i class="fas fa-exclamation-circle w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Error 404</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Error 500 -->
+                    <div class="tooltip-container">
+                        <a href="error500.html" 
+                           @click="activeMenu='error500'" 
+                           :class="activeMenu==='error500' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-5" data-title="Error 500">
+                            <i class="fas fa-times-circle w-5 text-center"></i>
+                            <span class="ml-3 transition-all duration-300">Error 500</span>
+                        </a>
+                    </div>
+                    <!-- Calendar -->
+                    <div class="tooltip-container">
+                        <a href="calendar.html" 
+                           @click="activeMenu='calendar'" 
+                           :class="activeMenu==='calendar' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-5" data-title="Error 500">
+                            <i class='bx bx-calendar w-5 text-center'></i>
+                            <span class="ml-3 transition-all duration-300">Calendar</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Collapsed State Menu Items -->
+                <div x-show="!sidebarOpen && open" class="mt-1 space-y-1 overflow-hidden">
+                    <!-- Invoice -->
+                    <div class="tooltip-container">
+                        <a href="invoice.html" @click="activeMenu='invoice'" :class="activeMenu==='invoice' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Invoice">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='invoice' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-receipt text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Login -->
+                    <div class="tooltip-container">
+                        <a href="login.html" @click="activeMenu='login'" :class="activeMenu==='login' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Login">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='login' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-sign-in-alt text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Sign Up -->
+                    <div class="tooltip-container">
+                        <a href="signup.html" @click="activeMenu='signup'" :class="activeMenu==='signup' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Sign Up">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='signup' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-user-plus text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Maintenance -->
+                    <div class="tooltip-container">
+                        <a href="maintenance.html" @click="activeMenu='maintenance'" :class="activeMenu==='maintenance' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Maintenance">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='maintenance' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-tools text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Recover Password -->
+                    <div class="tooltip-container">
+                        <a href="recover_password.html" @click="activeMenu='recover_password'" :class="activeMenu==='recover_password' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Recover Password">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='recover_password' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-key text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Error 404 -->
+                    <div class="tooltip-container">
+                        <a href="error404.html" @click="activeMenu='error404'" :class="activeMenu==='error404' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Error 404">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='error404' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-exclamation-circle text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <!-- Error 500 -->
+                    <div class="tooltip-container">
+                        <a href="error500.html" @click="activeMenu='error500'" :class="activeMenu==='error500' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Error 500">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='error500' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-times-circle text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Calendar -->
+                    <div class="tooltip-container">
+                        <a href="calendar.html" @click="activeMenu='calendar'" :class="activeMenu==='calendar' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'" class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" data-title="Calendar">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300" :class="activeMenu==='calendar' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class='bx bx-calendar'></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Maps Dropdown -->
+            <div x-data="{ 
+                    open: ['google-map','vector-map'].includes(activeMenu), }" class="tooltip-container mb-1">
+                <!-- Main Button -->
+                <button @click="open=!open"
+                    :class="open ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                    class="group w-full flex items-center justify-between p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm"
+                    data-title="Maps">
+
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300"
+                            :class="open ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                            <i class="fas fa-map text-lg"></i>
+                        </div>
+                        <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Maps</span>
+                    </div>
+
+                    <!-- Dropdown arrows -->
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'"
+                       class="transition-transform duration-300" 
+                       x-show="sidebarOpen"></i>
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'" 
+                       class="dropdown-indicator" 
+                       x-show="!sidebarOpen"></i>
+                </button>
+
+                <!-- Expanded Dropdown (Sidebar Open) -->
+                <div x-show="open && sidebarOpen" 
+                     x-transition:enter="transition ease-out duration-300" 
+                     x-transition:enter-start="opacity-0 -translate-y-2" 
+                     x-transition:enter-end="opacity-100 translate-y-0" 
+                     class="mt-1 ml-4 pl-3 border-l-2 border-gray-200 space-y-1 overflow-hidden">
+
+                    <!-- Google Map -->
+                    <div class="tooltip-container">
+                        <a href="google-map.html" @click="activeMenu='google-map'" 
+                           :class="activeMenu==='google-map' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Google Map">
+                            <i class="fab fa-google fa-map-marker text-sm"></i>
+                            <span class="ml-3 transition-all duration-300">Google Map</span>
+                        </a>
+                    </div>
+                    <!-- Vector Map -->
+                    <!-- <div class="tooltip-container">
+                        <a href="vector-map.html" @click="activeMenu='vector-map'" 
+                           :class="activeMenu==='vector-map' ? 'text-blue-600' : ''"
+                           class="group relative flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50" data-title="Basic Tables">
+                            <i class="fas fa-map-marked-alt text-sm"></i>
+                            <span class="ml-3 transition-all duration-300">Vector Map</span>
+                        </a>
+                    </div> -->
+
+                </div>
+
+                <!-- Collapsed State (Sidebar Closed) -->
+                <div x-show="!sidebarOpen && open" class="mt-1 space-y-1 overflow-hidden">
+                    <!-- Google Map -->
+                    <div class="tooltip-container">
+                        <a href="google-map.html" @click="activeMenu='google-map'" 
+                           :class="activeMenu==='google-map' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                           class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" 
+                           data-title="Google Map">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                                 :class="activeMenu==='google-map' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fab fa-google fa-map-marker text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Vector Map -->
+                    <div class="tooltip-container">
+                        <a href="vector-map.html" @click="activeMenu='vector-map'" 
+                           :class="activeMenu==='vector-map' ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                           class="group relative flex items-center p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm" 
+                           data-title="Vector Map">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                                 :class="activeMenu==='vector-map' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                                <i class="fas fa-map-marked-alt text-sm"></i>
+                            </div>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Multi-Level Dropdown -->
+            <div x-data="{ open: false }" class="tooltip-container mb-1">
+
+                <!-- Level 1: Main Button -->
+                <button @click="open=!open"
+                    :class="open ? 'bg-blue-50 text-blue-600 border-blue-200' : 'border-transparent'"
+                    class="group w-full flex items-center justify-between p-1 rounded-xl border transition-all duration-300 hover:bg-gray-50 hover:shadow-sm"
+                    data-title="Levels">
+
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300"
+                            :class="open ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-600'">
+                            <i class="fas fa-layer-group text-lg"></i>
+                        </div>
+                        <span x-show="sidebarOpen" class="ml-3 font-medium transition-all duration-300">Levels</span>
+                    </div>
+
+                    <!-- Arrow -->
+                    <i :class="open ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'"
+                       class="transition-transform duration-300"
+                       x-show="sidebarOpen"></i>
+                </button>
+
+                <!-- Dropdown Content -->
+                <div x-show="open && sidebarOpen"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 -translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     class="mt-1 ml-4 pl-3 border-l-2 border-gray-200 space-y-1 overflow-hidden">
+
+                    <!-- Normal Level -->
+                    <a href="#" 
+                       class="group flex items-center py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50 hover:text-blue-600">
+                        <i class="fas fa-circle text-xs text-gray-400 group-hover:text-blue-600"></i>
+                        <span class="ml-3">Normal Level</span>
+                    </a>
+
+                    <!-- Multi Level (1) -->
+                    <div x-data="{ subOpen1: false }">
+                        <button @click="subOpen1=!subOpen1"
+                            class="w-full flex items-center justify-between py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50">
+                            <span class="flex items-center">
+                                <i class="fas fa-folder mr-2 text-gray-500 group-hover:text-blue-600"></i>
+                                Multi Level 1
+                            </span>
+                            <i :class="subOpen1 ? 'fas fa-chevron-up text-xs' : 'fas fa-chevron-down text-xs'"></i>
+                        </button>
+
+                        <!-- Nested Sub Items -->
+                        <div x-show="subOpen1"
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             class="mt-1 ml-4 pl-3 border-l border-gray-200 space-y-1">
+
+                            <a href="#" class="block py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50 hover:text-blue-600">
+                                Sub Item 1
+                            </a>
+                            <a href="#" class="block py-2 text-sm rounded-lg transition-all duration-300 hover:bg-gray-50 hover:text-blue-600">
+                                Sub Item 2
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main-content transition-all duration-300"
+         :class="sidebarOpen && window.innerWidth > 768 ? 'ml-60' : 'ml-24'">
+         
+        <div class="sticky top-2 flex flex-wrap md:flex-nowrap justify-between items-center mb-6 p-3 bg-white/80 backdrop-blur-md rounded-2xl shadow-lg transition-all duration-500 z-40 md:z-40">
+            <!-- Mobile Menu Button -->
+            <button 
+        class="mobile-menu-btn w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md mr-3 
+               md:hidden" 
+        @click="sidebarOpen = !sidebarOpen">
+        <i class="fas fa-bars text-gray-600"></i>
+    </button>
+            
+            <!-- Search -->
+            <div x-data="{ active: false }" class="flex items-center justify-center md:justify-end flex-1 md:mx-6 relative transition-all duration-500 w-full md:w-auto">
+                <input type="text" placeholder="Search..." @focus="active = true" @blur="active = false" class="w-full md:w-48 lg:w-56 focus:w-72 pl-4 pr-10 py-2 text-sm rounded-full bg-gray-100 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-300">
+                <i class="fa-solid fa-magnifying-glass absolute right-3 top-2.5 text-gray-500 transition-transform duration-300":class="{'scale-110 text-blue-500': active}"></i>
+            </div>
+
+            <!-- Right Section (Notifications + Profile) -->
+            <div class="flex items-center space-x-3 md:mt-0">
+                <!-- Notifications -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" class="relative p-2 rounded-full bg-gray-100 hover:bg-blue-100 transition-all duration-300 shadow-sm hover:shadow-md">
+                        <i class="fa-regular fa-bell text-lg text-gray-700"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-md"></span>
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" @click.away="open = false" class="absolute right-0 mt-3 w-80 bg-white rounded-xl shadow-2xl overflow-hidden z-50">
+                        <div class="px-4 py-3 border-b border-gray-200 font-semibold text-gray-800 bg-gray-50">
+                            Notifications
+                        </div>
+                        <div class="max-h-64 overflow-hidden">
+                            <div class="flex items-start gap-3 p-3 hover:bg-blue-50 cursor-pointer transition-all">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" class="w-10 h-10 rounded-full object-cover" alt="">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">Denzel Washington</p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        Sent you a message — "Hey, are you ....
+                                    </p>
+                                    <span class="text-[11px] text-gray-400">1h ago</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 hover:bg-blue-50 cursor-pointer transition-all">
+                                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" class="w-10 h-10 rounded-full object-cover" alt="">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">Leonardo DiCaprio</p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        Commented on your post.
+                                    </p>
+                                    <span class="text-[11px] text-gray-400">3h ago</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="px-4 py-2 text-center text-sm text-gray-600 border-t border-gray-200 cursor-pointer hover:bg-blue-50 transition-all">
+                            View All Notifications
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Dropdown -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" :class="open ? 'ring-2 ring-blue-400' : ''" class="flex items-center transition-all duration-300 rounded-full">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=100&q=80" class="w-10 h-10 object-cover rounded-full shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300" alt="User">
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" @click.away="open = false" class="absolute right-0 mt-3 w-56 bg-white to-gray-500 text-black rounded-xl shadow-2xl overflow-hidden z-50">
+                        <div class="p-3 border-b border-black/10">
+                            <div class="font-medium">Denzel Washington</div>
+                            <div class="text-xs text-black/70">DevOps Engineer</div>
+                        </div>
+                        <a href="profile.html" class="flex items-center px-4 py-2 hover:bg-black/10 transition-all">
+                            <i class="fa-regular fa-user w-4 h-4 mr-2"></i> Profile
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-2 hover:bg-black/10 transition-all">
+                            <i class="fa-solid fa-user-plus w-4 h-4 mr-2"></i> Add Account
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-2 hover:bg-black/10 transition-all">
+                            <i class="fa-solid fa-lock w-4 h-4 mr-2"></i> Reset Password
+                        </a>
+                        <a href="#" class="flex items-center px-4 py-2 hover:bg-black/10 transition-all">
+                            <i class="fa-solid fa-circle-question w-4 h-4 mr-2"></i> Help
+                        </a>
+                        <hr class="border-black/10 my-1">
+                        <a href="#" class="flex items-center px-4 py-2 hover:bg-black/10 text-red-400 transition-all">
+                            <i class="fa-solid fa-right-from-bracket w-4 h-4 mr-2"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div x-data="{ 
+        sidebarOpen: true,
+        activeAlert: '', 
+        showModal1: false, 
+        showModal2: false, 
+        showModal3: false, 
+        showModal4: false, 
+        showModal5: false,
+        get alertText() {
+            switch (this.activeAlert) {
+                case 'success': return '✅ Success! Your action was successful.';
+                case 'warning': return '⚠️ Warning! Check the details carefully.';
+                case 'error': return '❌ Error! Something went wrong.';
+                case 'info': return 'ℹ️ Info! This is some additional information.';
+                case 'dark': return '🌙 Dark Alert! Something mysterious happened.';
+                default: return '';
+            }
+        }
+    }">
+
+        <!-- Main Content -->
+        <div class="container mx-auto">
+            
+            <!-- Animated Alert Display -->
+            <div 
+                x-show="activeAlert"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 -translate-y-4 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 -translate-y-3 scale-95"
+                class="p-4 rounded-lg mb-6 shadow-lg flex justify-between items-center"
+                :class="{
+                    'bg-green-100 text-green-800': activeAlert === 'success',
+                    'bg-yellow-100 text-yellow-800': activeAlert === 'warning',
+                    'bg-red-100 text-red-800': activeAlert === 'error',
+                    'bg-blue-100 text-blue-800': activeAlert === 'info',
+                    'bg-gray-800 text-gray-100': activeAlert === 'dark'
+                }"
+            >
+                <span x-text="alertText"></span>
+                <button @click="activeAlert = ''" class="ml-4 font-bold text-xl hover:scale-110 transition">&times;</button>
+            </div>
+
+            <!-- Alerts Section -->
+            <div class="bg-white p-6 rounded-xl shadow-lg mb-10">
+                <h1 class="text-3xl font-bold mb-6">Smooth Animated Alerts</h1>
+                <div class="flex flex-wrap gap-4">
+                    <button @click="activeAlert = 'success'" class="px-5 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition shadow hover:shadow-lg">Show Success</button>
+                    <button @click="activeAlert = 'warning'" class="px-5 py-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition shadow hover:shadow-lg">Show Warning</button>
+                    <button @click="activeAlert = 'error'" class="px-5 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow hover:shadow-lg">Show Error</button>
+                    <button @click="activeAlert = 'info'" class="px-5 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition shadow hover:shadow-lg">Show Info</button>
+                    <button @click="activeAlert = 'dark'" class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition shadow hover:shadow-lg">Show Dark</button>
+                </div>
+            </div>
+
+            <!-- Modals Section -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h1 class="text-3xl font-bold mb-6">Smooth Modals</h1>
+                <div class="flex flex-wrap gap-4">
+                    <button @click="showModal1 = true" class="px-5 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition shadow hover:shadow-lg">Simple Modal</button>
+                    <button @click="showModal2 = true" class="px-5 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition shadow hover:shadow-lg">Confirmation Modal</button>
+                    <button @click="showModal3 = true" class="px-5 py-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition shadow hover:shadow-lg">Form Modal</button>
+                    <button @click="showModal4 = true" class="px-5 py-2.5 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition shadow hover:shadow-lg">Profile Modal</button>
+                    <button @click="showModal5 = true" class="px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition shadow hover:shadow-lg">Content Modal</button>
+                </div>
+            </div>
+
+            <!-- Modal 1: Simple Modal -->
+            <div 
+                x-show="showModal1" 
+                @click.self="showModal1 = false"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4"
+                style="display: none;"
+            >
+                <div 
+                    @click.stop
+                    x-show="showModal1"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-8 scale-90"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                    class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full relative"
+                >
+                    <button @click="showModal1 = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold mb-4 text-blue-600">Simple Modal</h2>
+                    <p class="text-gray-600 mb-6">This is a clean, simple modal example with smooth animations.</p>
+                    <div class="flex justify-end">
+                        <button @click="showModal1 = false" class="px-6 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition shadow hover:shadow-lg">Close</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal 2: Confirmation Modal -->
+            <div 
+                x-show="showModal2"
+                @click.self="showModal2 = false"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4"
+                style="display: none;"
+            >
+                <div 
+                    @click.stop
+                    x-show="showModal2"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-8 scale-90"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                    class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full relative"
+                >
+                    <button @click="showModal2 = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold mb-4 text-green-600">Confirm Action</h2>
+                    <p class="text-gray-600 mb-6">Are you sure you want to proceed with this action?</p>
+                    <div class="flex justify-end space-x-3">
+                        <button @click="showModal2 = false" class="px-6 py-2.5 bg-gray-300 rounded-lg hover:bg-gray-400 transition">Cancel</button>
+                        <button @click="showModal2 = false" class="px-6 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition shadow hover:shadow-lg">Confirm</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal 3: Form Modal -->
+            <div 
+                x-show="showModal3"
+                @click.self="showModal3 = false"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4"
+                style="display: none;"
+            >
+                <div 
+                    @click.stop
+                    x-show="showModal3"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-8 scale-90"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                    class="bg-white p-8 rounded-2xl shadow-2xl max-w-lg w-full relative"
+                >
+                    <button @click="showModal3 = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold mb-6 text-yellow-600">Contact Form</h2>
+                    <form class="space-y-4" @submit.prevent="showModal3 = false">
+                        <div>
+                            <label class="block mb-2 text-sm font-semibold text-gray-700">Name</label>
+                            <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition" placeholder="Your name">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-semibold text-gray-700">Email</label>
+                            <input type="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition" placeholder="your@email.com">
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-semibold text-gray-700">Message</label>
+                            <textarea rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition" placeholder="Your message..."></textarea>
+                        </div>
+                        <div class="flex justify-end space-x-3 pt-2">
+                            <button type="button" @click="showModal3 = false" class="px-6 py-2.5 bg-gray-300 rounded-lg hover:bg-gray-400 transition">Cancel</button>
+                            <button type="submit" class="px-6 py-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition shadow hover:shadow-lg">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal 4: Profile Modal -->
+            <div 
+                x-show="showModal4"
+                @click.self="showModal4 = false"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4"
+                style="display: none;"
+            >
+                <div 
+                    @click.stop
+                    x-show="showModal4"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-8 scale-90"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                    class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full relative"
+                >
+                    <button @click="showModal4 = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="text-center">
+                        <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                            JD
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2">John Doe</h2>
+                        <p class="text-gray-500 mb-1">Full Stack Developer</p>
+                        <p class="text-sm text-gray-400 mb-6">john.doe@example.com</p>
+                        <div class="flex justify-center space-x-4 mb-6">
+                            <a href="#" class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center hover:bg-blue-200 transition">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center hover:bg-sky-200 transition">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center hover:bg-pink-200 transition">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                        <button @click="showModal4 = false" class="w-full px-6 py-2.5 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition shadow hover:shadow-lg">Close Profile</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal 5: Content Modal -->
+            <div 
+                x-show="showModal5"
+                @click.self="showModal5 = false"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4"
+                style="display: none;"
+            >
+                <div 
+                    @click.stop
+                    x-show="showModal5"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-8 scale-90"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                    class="bg-white p-8 rounded-2xl shadow-2xl max-w-2xl w-full relative max-h-[90vh] overflow-y-auto"
+                >
+                    <button @click="showModal5 = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl transition z-10">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800">Terms & Conditions</h2>
+                    <div class="text-gray-600 space-y-4 pr-4">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
+                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                        <h3 class="font-bold text-lg text-gray-800 mt-4">1. User Agreement</h3>
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis.</p>
+                        <h3 class="font-bold text-lg text-gray-800 mt-4">2. Privacy Policy</h3>
+                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+                        <h3 class="font-bold text-lg text-gray-800 mt-4">3. Cookie Policy</h3>
+                        <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
+                    </div>
+                    <div class="flex justify-end mt-6 pt-4 border-t">
+                        <button @click="showModal5 = false" class="px-6 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition shadow hover:shadow-lg">I Understand</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- 🌙 / ☀️ Dark Mode Toggle Switch -->
+    <label for="theme-toggle" class="fixed bottom-6 right-6 z-50 inline-block w-14 h-8 cursor-pointer select-none">
+      <input type="checkbox" id="theme-toggle" class="peer sr-only">
+      <span class="absolute inset-0 bg-gray-300 rounded-full transition-colors duration-300 ease-in-out peer-checked:bg-blue-600 shadow-md"></span>
+      <span class="absolute top-1/2 left-1 bg-white rounded-full shadow-md size-6 -translate-y-1/2 transition-transform duration-300 ease-in-out peer-checked:translate-x-6 flex items-center justify-center text-lg" id="theme-icon">🌙</span>
+    </label>
+
+    <!-- Dark theme js -->
+    <script src="assets/js/dark-theme.js"></script>
+
+    <!-- Quillis Js -->
+    <script src="assets/js/quill.min.js"></script>
+    <script src="assets/js/quilljs-demo.js"></script>
+
+    <!--dropify-->
+    <script src="assets/dropify/dropify.min.js"></script>
+
+    <!-- Init js-->
+    <script src="assets/js/fileuploads-demo.js"></script>
+    <script src="assets/js/carousels.js"></script>
+
+</body>
+</html>
